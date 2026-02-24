@@ -25,7 +25,6 @@
             height: 100vh;
         }
 
-        /* 상단 헤더 및 검색창 */
         header {
             background-color: var(--panel-bg);
             padding: 15px 20px;
@@ -37,103 +36,42 @@
             z-index: 10;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
 
-        .search-container {
-            display: flex;
-            gap: 10px;
-        }
-
+        .search-container { display: flex; gap: 10px; }
         .search-container input {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 1rem;
-            width: 250px;
-            outline: none;
-            transition: 0.2s;
+            background-color: var(--bg-dark); border: 1px solid var(--border-color); color: #fff;
+            padding: 10px 15px; border-radius: 6px; font-size: 1rem; width: 250px; outline: none; transition: 0.2s;
         }
-
-        .search-container input:focus {
-            border-color: var(--accent-blue);
-        }
-
+        .search-container input:focus { border-color: var(--accent-blue); }
         .search-container button {
-            background-color: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
+            background-color: var(--accent-blue); color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s;
         }
+        .search-container button:hover { background-color: var(--accent-hover); }
 
-        .search-container button:hover {
-            background-color: var(--accent-hover);
-        }
-
-        /* 퀵 버튼 (자주 보는 종목) */
         .quick-links {
-            display: flex;
-            gap: 10px;
-            padding: 15px 20px;
-            background-color: var(--bg-dark);
-            overflow-x: auto;
-            white-space: nowrap;
+            display: flex; gap: 10px; padding: 15px 20px; background-color: var(--bg-dark);
+            overflow-x: auto; white-space: nowrap;
         }
-
         .quick-links button {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.2s;
+            background-color: var(--panel-bg); border: 1px solid var(--border-color); color: var(--text-main);
+            padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
         }
+        .quick-links button:hover { background-color: #2a2e39; color: #fff; }
 
-        .quick-links button:hover {
-            background-color: #2a2e39;
-            color: #fff;
-        }
-
-        /* 메인 차트 영역 */
         .main-content {
-            flex: 1;
-            display: flex;
-            padding: 0 20px 20px 20px;
-            gap: 20px;
-            height: calc(100vh - 140px);
+            flex: 1; display: flex; padding: 0 20px 20px 20px; gap: 20px; height: calc(100vh - 140px);
         }
 
         .chart-container {
-            flex: 3;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
+            flex: 3; background-color: var(--panel-bg); border: 1px solid var(--border-color);
+            border-radius: 8px; overflow: hidden; position: relative;
         }
 
         .market-overview {
-            flex: 1;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            min-width: 300px;
+            flex: 1; background-color: var(--panel-bg); border: 1px solid var(--border-color);
+            border-radius: 8px; overflow: hidden; min-width: 300px;
         }
 
         @media (max-width: 768px) {
@@ -144,17 +82,14 @@
             .market-overview { display: none; }
         }
     </style>
-    
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </head>
 <body>
 
     <header>
-        <div class="logo">
-            <span style="color: var(--accent-blue);">📈</span> Stock Monitor
-        </div>
+        <div class="logo"><span style="color: var(--accent-blue);">📈</span> Stock Monitor</div>
         <div class="search-container">
-            <input type="text" id="tickerInput" placeholder="티커 입력 (예: TSLA, AAPL)" onkeypress="handleEnter(event)">
+            <input type="text" id="tickerInput" placeholder="티커 또는 한국주식 6자리 입력" onkeypress="handleEnter(event)">
             <button onclick="loadChart()">검색</button>
         </div>
     </header>
@@ -164,10 +99,10 @@
         <button onclick="quickSearch('NASDAQ:AAPL')">애플 (AAPL)</button>
         <button onclick="quickSearch('NASDAQ:NVDA')">엔비디아 (NVDA)</button>
         <button onclick="quickSearch('NASDAQ:MSFT')">마이크로소프트 (MSFT)</button>
-        <button onclick="quickSearch('KRX:005930')">삼성전자 (005930)</button>
-        <button onclick="quickSearch('KRX:373220')">LG에너지솔루션</button>
-        <button onclick="quickSearch('KRX:000660')">SK하이닉스</button>
+        <button onclick="quickSearch('NASDAQ:GOOGL')">구글 (GOOGL)</button>
+        <button onclick="quickSearch('NASDAQ:AMZN')">아마존 (AMZN)</button>
         <button onclick="quickSearch('CRYPTO:BTCUSD')">비트코인 (BTC)</button>
+        <button onclick="quickSearch('CRYPTO:ETHUSD')">이더리움 (ETH)</button>
     </div>
 
     <div class="main-content">
@@ -206,35 +141,34 @@
     </div>
 
     <script>
-        // 초기 로딩 시 테슬라 차트 띄우기
-        window.onload = function() {
-            createWidget("NASDAQ:TSLA");
-        };
+        window.onload = function() { createWidget("NASDAQ:TSLA"); };
 
-        // 엔터키 입력 시 검색 실행
-        function handleEnter(event) {
-            if (event.key === 'Enter') {
-                loadChart();
-            }
-        }
+        function handleEnter(event) { if (event.key === 'Enter') loadChart(); }
 
-        // 퀵 버튼 클릭 시 실행
         function quickSearch(ticker) {
             document.getElementById('tickerInput').value = ticker;
             createWidget(ticker);
         }
 
-        // 검색 버튼 클릭 시 실행
         function loadChart() {
             let ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
             if (!ticker) {
-                alert("종목 코드를 입력해주세요! (예: AAPL, TSLA)");
+                alert("종목 코드를 입력해주세요! (예: AAPL, TSLA, 005930)");
                 return;
             }
+
+            // 💡 한국 주식(숫자 6자리 혹은 KRX 포함) 검색 시 우회 로직
+            if (ticker.includes('KRX:') || /^[0-9]{6}$/.test(ticker)) {
+                alert("한국 거래소(KRX) 정책으로 인해 한국 주식 차트는 외부 사이트에 띄울 수 없습니다. ㅠㅠ\n대신 '네이버 금융' 실시간 창으로 바로 연결해 드릴게요!");
+                let code = ticker.replace('KRX:', '');
+                window.open(`https://finance.naver.com/item/main.naver?code=${code}`, '_blank');
+                return;
+            }
+
+            // 미국 주식, 코인 등은 정상적으로 트레이딩뷰 차트 생성
             createWidget(ticker);
         }
 
-        // 💡 트레이딩뷰 위젯을 완벽하게 새로고침 해주는 함수로 변경
         function createWidget(symbol) {
             new TradingView.widget({
                 "autosize": true,
