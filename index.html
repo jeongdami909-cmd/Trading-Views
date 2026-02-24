@@ -12,36 +12,27 @@
             --accent-blue: #2962ff;
             --accent-hover: #1e4bd8;
             --border-color: #2a2e39;
+            --krx-color: #ff3b30;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            margin: 0; padding: 0; background-color: var(--bg-dark); color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            display: flex; flex-direction: column; height: 100vh;
         }
 
         header {
-            background-color: var(--panel-bg);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            z-index: 10;
+            background-color: var(--panel-bg); padding: 15px 20px; display: flex;
+            justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 10;
         }
 
         .logo { font-size: 1.5rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
 
-        .search-container { display: flex; gap: 10px; }
+        .search-container { display: flex; gap: 10px; align-items: center; }
         .search-container input {
             background-color: var(--bg-dark); border: 1px solid var(--border-color); color: #fff;
-            padding: 10px 15px; border-radius: 6px; font-size: 1rem; width: 250px; outline: none; transition: 0.2s;
+            padding: 10px 15px; border-radius: 6px; font-size: 1rem; width: 220px; outline: none; transition: 0.2s;
         }
         .search-container input:focus { border-color: var(--accent-blue); }
         .search-container button {
@@ -50,9 +41,16 @@
         }
         .search-container button:hover { background-color: var(--accent-hover); }
 
+        /* 💡 한국 주식 코드북 버튼 스타일 */
+        .btn-krx {
+            background-color: transparent; border: 1px solid var(--krx-color); color: var(--krx-color);
+            padding: 10px 15px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-krx:hover { background-color: var(--krx-color); color: white; }
+
         .quick-links {
             display: flex; gap: 10px; padding: 15px 20px; background-color: var(--bg-dark);
-            overflow-x: auto; white-space: nowrap;
+            overflow-x: auto; white-space: nowrap; border-bottom: 1px solid var(--border-color);
         }
         .quick-links button {
             background-color: var(--panel-bg); border: 1px solid var(--border-color); color: var(--text-main);
@@ -60,24 +58,39 @@
         }
         .quick-links button:hover { background-color: #2a2e39; color: #fff; }
 
-        .main-content {
-            flex: 1; display: flex; padding: 0 20px 20px 20px; gap: 20px; height: calc(100vh - 140px);
-        }
+        .main-content { flex: 1; display: flex; padding: 20px; gap: 20px; height: calc(100vh - 140px); box-sizing: border-box; }
+        .chart-container { flex: 3; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; position: relative; }
+        .market-overview { flex: 1; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; min-width: 300px; }
 
-        .chart-container {
-            flex: 3; background-color: var(--panel-bg); border: 1px solid var(--border-color);
-            border-radius: 8px; overflow: hidden; position: relative;
+        /* 💡 한국 주식 코드북 모달창 스타일 */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);
         }
-
-        .market-overview {
-            flex: 1; background-color: var(--panel-bg); border: 1px solid var(--border-color);
-            border-radius: 8px; overflow: hidden; min-width: 300px;
+        .modal-overlay.open { display: flex; }
+        .modal-content {
+            background: var(--panel-bg); width: 90%; max-width: 400px; padding: 25px;
+            border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative; max-height: 80vh; overflow-y: auto;
         }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #888; background: none; border: none; cursor: pointer; }
+        .close-btn:hover { color: #fff; }
+        
+        .modal-content h3 { margin-top: 0; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .krx-list { list-style: none; padding: 0; margin: 0; }
+        .krx-list li {
+            display: flex; justify-content: space-between; padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem;
+        }
+        .krx-list li:last-child { border-bottom: none; }
+        .krx-name { color: #fff; }
+        .krx-code { color: var(--accent-blue); font-family: monospace; font-size: 1.05rem; background: rgba(41, 98, 255, 0.1); padding: 2px 8px; border-radius: 4px; cursor: pointer;}
+        .krx-code:hover { background: var(--accent-blue); color: #fff; }
 
         @media (max-width: 768px) {
-            header { flex-direction: column; gap: 15px; }
-            .search-container { width: 100%; }
-            .search-container input { flex: 1; }
+            header { flex-direction: column; gap: 15px; align-items: stretch; }
+            .search-container { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+            .search-container input { flex: 1; min-width: 150px; }
             .main-content { flex-direction: column; }
             .market-overview { display: none; }
         }
@@ -89,7 +102,8 @@
     <header>
         <div class="logo"><span style="color: var(--accent-blue);">📈</span> Stock Monitor</div>
         <div class="search-container">
-            <input type="text" id="tickerInput" placeholder="티커 또는 한국주식 6자리 입력" onkeypress="handleEnter(event)">
+            <button class="btn-krx" onclick="openKrxModal()">🇰🇷 주식 코드북</button>
+            <input type="text" id="tickerInput" placeholder="티커(AAPL) 또는 주식번호(005930)" onkeypress="handleEnter(event)">
             <button onclick="loadChart()">검색</button>
         </div>
     </header>
@@ -102,12 +116,10 @@
         <button onclick="quickSearch('NASDAQ:GOOGL')">구글 (GOOGL)</button>
         <button onclick="quickSearch('NASDAQ:AMZN')">아마존 (AMZN)</button>
         <button onclick="quickSearch('CRYPTO:BTCUSD')">비트코인 (BTC)</button>
-        <button onclick="quickSearch('CRYPTO:ETHUSD')">이더리움 (ETH)</button>
     </div>
 
     <div class="main-content">
         <div class="chart-container" id="tv_chart_container"></div>
-        
         <div class="market-overview">
             <div class="tradingview-widget-container">
                 <div class="tradingview-widget-container__widget"></div>
@@ -119,10 +131,8 @@
                     "locale": "kr",
                     "width": "100%",
                     "height": "100%",
-                    "largeChartUrl": "",
                     "isTransparent": true,
                     "showSymbolLogo": true,
-                    "showFloatingTooltip": false,
                     "tabs": [
                         {
                             "title": "주요 지수",
@@ -130,13 +140,34 @@
                                 { "s": "OANDA:SPX500USD", "d": "S&P 500" },
                                 { "s": "OANDA:NAS100USD", "d": "Nasdaq 100" },
                                 { "s": "KOREA:KOSPI", "d": "KOSPI" }
-                            ],
-                            "originalTitle": "Indices"
+                            ]
                         }
                     ]
                 }
                 </script>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="krxModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeKrxModal()">×</button>
+            <h3>🇰🇷 주요 한국 주식 코드</h3>
+            <p style="font-size: 0.8rem; color: #888; margin-top: -5px;">* 코드를 누르면 바로 에프앤가이드로 이동합니다.</p>
+            <ul class="krx-list">
+                <li><span class="krx-name">삼성전자</span> <span class="krx-code" onclick="openFnGuide('005930')">005930</span></li>
+                <li><span class="krx-name">SK하이닉스</span> <span class="krx-code" onclick="openFnGuide('000660')">000660</span></li>
+                <li><span class="krx-name">LG에너지솔루션</span> <span class="krx-code" onclick="openFnGuide('373220')">373220</span></li>
+                <li><span class="krx-name">삼성바이오로직스</span> <span class="krx-code" onclick="openFnGuide('207940')">207940</span></li>
+                <li><span class="krx-name">현대차</span> <span class="krx-code" onclick="openFnGuide('005380')">005380</span></li>
+                <li><span class="krx-name">기아</span> <span class="krx-code" onclick="openFnGuide('000270')">000270</span></li>
+                <li><span class="krx-name">셀트리온</span> <span class="krx-code" onclick="openFnGuide('068270')">068270</span></li>
+                <li><span class="krx-name">POSCO홀딩스</span> <span class="krx-code" onclick="openFnGuide('005490')">005490</span></li>
+                <li><span class="krx-name">NAVER (네이버)</span> <span class="krx-code" onclick="openFnGuide('035420')">035420</span></li>
+                <li><span class="krx-name">카카오</span> <span class="krx-code" onclick="openFnGuide('035720')">035720</span></li>
+                <li><span class="krx-name">KB금융</span> <span class="krx-code" onclick="openFnGuide('105560')">105560</span></li>
+                <li><span class="krx-name">에코프로비엠</span> <span class="krx-code" onclick="openFnGuide('247540')">247540</span></li>
+            </ul>
         </div>
     </div>
 
@@ -150,6 +181,14 @@
             createWidget(ticker);
         }
 
+        // 💡 에프앤가이드(FnGuide) 팝업 함수
+        function openFnGuide(code) {
+            // FnGuide의 고유 주소 체계 (A + 6자리 숫자)
+            let fnguideUrl = `https://comp.fnguide.com/SVO2/ASP/SVD_Main.asp?pGB=1&gicode=A${code}`;
+            window.open(fnguideUrl, '_blank');
+            closeKrxModal();
+        }
+
         function loadChart() {
             let ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
             if (!ticker) {
@@ -157,15 +196,15 @@
                 return;
             }
 
-            // 💡 한국 주식(숫자 6자리 혹은 KRX 포함) 검색 시 우회 로직
+            // 💡 한국 주식 검색 시 네이버 대신 '에프앤가이드'로 자동 우회 연결!
             if (ticker.includes('KRX:') || /^[0-9]{6}$/.test(ticker)) {
-                alert("한국 거래소(KRX) 정책으로 인해 한국 주식 차트는 외부 사이트에 띄울 수 없습니다. ㅠㅠ\n대신 '네이버 금융' 실시간 창으로 바로 연결해 드릴게요!");
-                let code = ticker.replace('KRX:', '');
-                window.open(`https://finance.naver.com/item/main.naver?code=${code}`, '_blank');
+                // 입력값에서 순수하게 숫자 6자리만 뽑아내기
+                let code = ticker.replace(/[^0-9]/g, ''); 
+                openFnGuide(code);
                 return;
             }
 
-            // 미국 주식, 코인 등은 정상적으로 트레이딩뷰 차트 생성
+            // 미국 주식 등은 정상적으로 트레이딩뷰 차트 생성
             createWidget(ticker);
         }
 
@@ -187,6 +226,10 @@
                 "container_id": "tv_chart_container"
             });
         }
+
+        // 💡 모달창 열기/닫기 함수
+        function openKrxModal() { document.getElementById('krxModal').classList.add('open'); }
+        function closeKrxModal() { document.getElementById('krxModal').classList.remove('open'); }
     </script>
 </body>
 </html>
