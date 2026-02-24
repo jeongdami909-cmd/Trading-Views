@@ -1,1 +1,271 @@
 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Stock Monitor</title>
+    <style>
+        :root {
+            --bg-dark: #0b0e14;
+            --panel-bg: #131722;
+            --text-main: #d1d4dc;
+            --accent-blue: #2962ff;
+            --accent-hover: #1e4bd8;
+            --border-color: #2a2e39;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* 상단 헤더 및 검색창 */
+        header {
+            background-color: var(--panel-bg);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-container input {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 250px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-container input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .search-container button {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .search-container button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* 퀵 버튼 (자주 보는 종목) */
+        .quick-links {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background-color: var(--bg-dark);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .quick-links button {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quick-links button:hover {
+            background-color: #2a2e39;
+            color: #fff;
+        }
+
+        /* 메인 차트 영역 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 0 20px 20px 20px;
+            gap: 20px;
+            height: calc(100vh - 140px);
+        }
+
+        .chart-container {
+            flex: 3;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .market-overview {
+            flex: 1;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            min-width: 300px;
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; }
+            .search-container { width: 100%; }
+            .search-container input { flex: 1; }
+            .main-content { flex-direction: column; }
+            .market-overview { display: none; /* 모바일에서는 차트만 크게 보이도록 사이드바 숨김 */ }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span style="color: var(--accent-blue);">📈</span> Stock Monitor
+        </div>
+        <div class="search-container">
+            <input type="text" id="tickerInput" placeholder="종목명 또는 티커 입력 (예: TSLA)" onkeypress="handleEnter(event)">
+            <button onclick="loadChart()">검색</button>
+        </div>
+    </header>
+
+    <div class="quick-links">
+        <button onclick="quickSearch('NASDAQ:TSLA')">테슬라 (TSLA)</button>
+        <button onclick="quickSearch('NASDAQ:AAPL')">애플 (AAPL)</button>
+        <button onclick="quickSearch('NASDAQ:NVDA')">엔비디아 (NVDA)</button>
+        <button onclick="quickSearch('NASDAQ:MSFT')">마이크로소프트 (MSFT)</button>
+        <button onclick="quickSearch('KRX:005930')">삼성전자 (005930)</button>
+        <button onclick="quickSearch('KRX:373220')">LG에너지솔루션</button>
+        <button onclick="quickSearch('KRX:000660')">SK하이닉스</button>
+        <button onclick="quickSearch('CRYPTO:BTCUSD')">비트코인 (BTC)</button>
+    </div>
+
+    <div class="main-content">
+        <div class="chart-container" id="tv_chart_container"></div>
+        
+        <div class="market-overview">
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/tv-widget-market-overview.js" async>
+                {
+                    "colorTheme": "dark",
+                    "dateRange": "12M",
+                    "showChart": true,
+                    "locale": "kr",
+                    "width": "100%",
+                    "height": "100%",
+                    "largeChartUrl": "",
+                    "isTransparent": true,
+                    "showSymbolLogo": true,
+                    "showFloatingTooltip": false,
+                    "tabs": [
+                        {
+                            "title": "주요 지수",
+                            "symbols": [
+                                { "s": "OANDA:SPX500USD", "d": "S&P 500" },
+                                { "s": "OANDA:NAS100USD", "d": "Nasdaq 100" },
+                                { "s": "KOREA:KOSPI", "d": "KOSPI" }
+                            ],
+                            "originalTitle": "Indices"
+                        }
+                    ]
+                }
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 초기 로딩 시 테슬라 차트 띄우기
+        window.onload = function() {
+            createWidget("NASDAQ:TSLA");
+        };
+
+        // 엔터키 입력 시 검색 실행
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                loadChart();
+            }
+        }
+
+        // 퀵 버튼 클릭 시 실행
+        function quickSearch(ticker) {
+            document.getElementById('tickerInput').value = ticker;
+            createWidget(ticker);
+        }
+
+        // 검색 버튼 클릭 시 실행
+        function loadChart() {
+            let ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
+            if (!ticker) {
+                alert("종목 코드를 입력해주세요! (예: AAPL, TSLA)");
+                return;
+            }
+            createWidget(ticker);
+        }
+
+        // 트레이딩뷰 위젯 동적 생성 함수
+        function createWidget(symbol) {
+            const container = document.getElementById('tv_chart_container');
+            container.innerHTML = ''; // 기존 차트 지우기
+
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/tv-widget-advanced-chart.js';
+            script.async = true;
+
+            // 위젯 설정 데이터
+            const config = {
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "D", // 일봉 기준
+                "timezone": "Asia/Seoul",
+                "theme": "dark",
+                "style": "1", // 1=캔들차트, 2=선차트, 3=면적차트
+                "locale": "kr",
+                "enable_publishing": false,
+                "backgroundColor": "#131722",
+                "gridColor": "#1f2937",
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "calendar": false,
+                "support_host": "https://www.tradingview.com"
+            };
+
+            script.innerHTML = JSON.stringify(config);
+            container.appendChild(script);
+        }
+    </script>
+</body>
+</html>
